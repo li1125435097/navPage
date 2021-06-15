@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>添加页面</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js" charset="utf-8"></script>
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css" rel="stylesheet">
+		<style type="text/css">
+			input,.aaa{
+				margin-bottom: 2vh;
+				width: 35%;
+				text-indent: 0.5rem;
+			}
+			input:first-child{
+				margin-top: 10vh;
+			}
+			.aaa{
+				height: 20vh;
+			}
+			@media screen and (max-width: 1187px) {
+				
+			}
+			.back{
+				text-align: right;
+				margin-top: 5vh;
+				margin-right: 15vw;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="back">
+				<a class="btn btn-warning col-md-1" href="/manage" style="color: white;">返回</a>
+			</div>
+			
+			<form action="/list/adddata" method="post" class="text-center">
+				跳转：<input type="url" name="href" placeholder="请输入需要跳转的网址" required/><br>
+				图片：<input type="url" name="img" placeholder="请输入图片路径" required/><br>
+				名称：<input type="text" name="name" placeholder="请输入模块名称" required/><br>
+				类型：<input type="text" name="type" placeholder="请输入模块类型" required/><br>
+				<span style="vertical-align: top;">简介：</span><textarea name="doc" class="aaa" placeholder="请简述该模块用途" required></textarea><br>
+				<button type="submit" class="btn btn-primary col-md-2">添加</button>
+			</form>
+		</div>
+	</body>
+</html>
