@@ -1,0 +1,9 @@
+a.txt
+app.js
+commit.bash
+dirStructure.md
+jsonData/
+node_modules/
+package.json
+README.md
+src/
