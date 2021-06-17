@@ -2,9 +2,18 @@ body{
 	margin: 0;
 	padding: 0;
 }
+.title{
+	width: 170px;
+	height: 35px;
+	margin-bottom: 6px;
+}
+.ico{
+	width: 50px;
+	height: 50px;
+}
 .searchItem{
 	text-align: center;
-	padding: 80px 0 10px;
+	padding: 50px 0 10px;
 	position: fixed;
 	width: calc(100% - 0px);
 	background-color: white;
@@ -41,7 +50,7 @@ body{
 .display{}
 ul{
 	list-style: none;
-	padding: 133px 0 5vh 8%;
+	padding: 160px 0 5vh 8%;
 	margin: 0;
 	font-size: 0;
 }

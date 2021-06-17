@@ -9,29 +9,63 @@
 				margin: 0;
 				padding: 0;
 			}
+			.bottom{
+				position: fixed;
+				top: calc(100vh - 35px);
+				height: 35px;
+				width: 100%;
+				background-color: white;
+			}
 			.header{
-				margin-left: calc((35vw - 176px)/2);
-				margin-top: 10vh;
+				width: 100%;
+				height: 12vh;
+				background-color: white;
+				padding-left: calc((35vw - 176px)/2);
+				position: fixed;
+				top:0;
 			}
 			.header>button{
 				padding: 3px 40px;
+				margin-top: calc(12vh - 37px);
 			}
-			table{
+			.header>button:nth-of-type(3){
+				padding: 3px 10px;
+			}
+			.display>table{
 				margin: auto;
-				margin-top: 3vh;
+				margin-top: 12vh;
+				margin-bottom: 12vh;
 				border-collapse: collapse;
 			}
-			input{
+			.header>table{
+				margin: auto;
+				border-collapse: collapse;
+				position: relative;
+				left: calc((-35vw + 176px)/2);
+				top: 10px;
+				background-color: #fff;
+			}
+			.display input{
 				border: none;
 				outline: none;
 				cursor: context-menu;
 				background-color: transparent;
 			}
+			.header input{
+				margin-left: 10vw;
+				height: 20px;
+			}
+			.myhead>th{padding: 1px 3px;}
+			.myhead>th:nth-child(1),
+			.myhead>th:nth-child(2),
+			.myhead>th:nth-child(5),
 			td:nth-of-type(2)>input,
 			td:nth-of-type(3)>input,
 			td:nth-of-type(6)>input{
 				width: 15vw;
 			}
+			.myhead>th:nth-child(3),
+			.myhead>th:nth-child(4),
 			td:nth-of-type(4)>input,
 			td:nth-of-type(5)>input{
 				width: 10vw;
@@ -44,38 +78,55 @@
 		<div class="header">
 			<button type="button" onclick="location.href='/add'">新增</button>
 			<button type="button" onclick="location.href='/'">返回主页</button>
-		</div>
-		
-		<!-- 展示信息 -->
-		<div class="display">
+			<input type="text" id="searchText" />
+			<button type="button" class="btn">搜索</button>
+			<br>
 			<table border="" cellspacing="0" cellpadding="">
-				<tr id="render">
-					<th style="display: none;">ID</th>
+				<tr class="myhead">
 					<th>跳转路径</th>
 					<th>图片路径</th>
 					<th>名称</th>
 					<th>类型</th>
 					<th>简介</th>
-					<th>操作</th>
+					<th style="width: 134px;">操作</th>
 				</tr>
 			</table>
 		</div>
 		
-		<!-- 底部信息 -->
-		<div class="bottom">
-			
+		<!-- 展示信息 -->
+		<div class="display">
+			<table border="" cellspacing="0" cellpadding="" >
+				<tbody id="render">
+				</tbody>
+				
+			</table>
 		</div>
+		
+		<!-- 底部信息 -->
+		<div class="bottom"></div>
+		
+		
 		<script type="text/javascript">
 			$(async function(){
 				let datas = await getData()
 				render(datas)
+				$('.btn')[0].onclick = function(){search(datas)}
+				$('#searchText')[0].onkeydown = function(){if(event.keyCode==13) search(datas)}
 			})
 			
 			const nums = 150
 			
 			// 列表渲染函数
   			function render(datas){
-				let html = ''
+				let html = `<tr>
+						<th style="display: none;">ID</th>
+						<th>跳转路径</th>
+						<th>图片路径</th>
+						<th>名称</th>
+						<th>类型</th>
+						<th>简介</th>
+						<th>操作</th>
+					</tr>`
 				datas.map((data)=>{
 					html += `
 						<tr>
@@ -93,7 +144,8 @@
 						</tr>
 						`
 				})
-				$('#render').after(html)
+				console.log(html)
+				$('#render').html(html)
 			}
 			
 			//获取数据函数
@@ -155,6 +207,19 @@
 				.then((data)=>{
 					alert(data)
 				})
+			}
+			
+			function search(datas){
+				$('#searchText')[0].select()
+				let text = $('#searchText').val()
+				let result = []
+				datas.map((v)=>{
+					let end = JSON.stringify(v)
+					if(end.indexOf(text)>-1){
+						result.push(JSON.parse(end))
+					}
+				})
+				result.length>0 ? render(result) : alert('很抱歉，没有搜到你想要的')
 			}
 		</script>
 	</body>
