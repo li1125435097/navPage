@@ -26,6 +26,7 @@ app.use(bodyParser.json())
 // 路由配置
 app.use('/',require('./src/routes/main.js'))
 app.use('/list',require('./src/routes/list.js'))
+app.use('/schedule',require('./src/routes/scheduleList.js'))
 
 
 

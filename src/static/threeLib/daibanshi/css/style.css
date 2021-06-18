@@ -1,0 +1,84 @@
+* {
+  box-sizing: border-box;
+  font-family: sans-serif, Courier, monospace;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  background: #303134;
+  color: white;
+  height: 100vh;
+  width: 100%;
+}
+body h2 {
+  font-size: 80px;
+  color: #4285f4;
+  margin: 60px;
+  text-transform: uppercase;
+}
+
+.all {
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  padding: 20px;
+  /* now to the list shit */
+}
+.all .inout {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+.all .inout #text,
+.all .inout button {
+  padding: 5px 10px;
+  height: 50px;
+  font-size: 18px;
+  border: none;
+}
+.all .inout #text {
+  width: 80%;
+  border-radius: 5px 0 0 5px;
+}
+.all .inout button {
+  width: 20%;
+  background: #1a73e8;
+  border-radius: 0 5px 5px 0;
+  color: white;
+  cursor: pointer;
+}
+.all .list ul {
+  list-style: none;
+  padding: 0;
+}
+.all .list ul li {
+  width: 100%;
+  background: white;
+  color: #303134;
+  margin: 0;
+  padding: 20px;
+  border: 1px solid #303134;
+  border-radius: 5px;
+}
+.all .list ul li span {
+  padding: 10px;
+  margin: 5px;
+  background: #eee;
+  border-radius: 3px;
+  color: white;
+  display: inline-block;
+  float: right;
+  margin-top: -10px;
+  cursor: pointer;
+}
+.all .list ul li span.first {
+  background: #ffac13;
+}
+.all .list ul li span.second {
+  background: #b11717;
+}

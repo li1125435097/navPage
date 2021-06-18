@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>待办日志</title>
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css" rel="stylesheet">
+		<style type="text/css">
+			body{
+				background-image: url(../static/img/bg.png);
+				padding-top: 6vh;
+			}
+			.history{
+				text-align: right;
+				margin-right: 10vw;
+				margin-bottom: 2vh;
+			}
+			@media screen and (max-width: 576px){
+				.fixh{
+					height: 38px;
+					overflow: hidden;
+				}
+				.mybtn{
+					position: relative;
+					left: -27px;
+					width: 17vw;
+				}
+				.mybtn1,.mybtn2,.mybtn3{
+					position: relative;
+					width: 11vw;
+				}
+				.mybtn1{left: -27px;}
+				.mybtn2{left: -31px;}
+				.mybtn3{top: -38px;left: 57px;}
+			}
+			@media screen and (min-width: 576px){
+				.mybtn{
+					position: relative;
+					left: -27px;
+					width: 12vw;
+				}
+				.mybtn1,.mybtn2,.mybtn3{
+					position: relative;
+					width: 4vw;
+				}
+				.mybtn1{left: -27px;}
+				.mybtn2{left: -32px;}
+				.mybtn3{left: -37px;}
+			}
+			
+			.blank{
+				margin-top: 10px;
+			}
+			.form-control{
+				box-shadow: none !important;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="history"><a class="btn btn-outline-primary btn-sm logbtn" onclick="hlog()">完成记录</a></div>
+		<div class="container"></div>
+		
+		<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.1/js/bootstrap.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(async function(){
+				let values = await $.get('/schedule/getdata')
+				let agenda = []
+				let complete = []
+				values.map(v=>{v.done==1 ? complete.push(v) : agenda.push(v)})
+				console.log(agenda,complete)
+				window.datas = agenda
+				window.dones = complete
+				render(datas)
+			})
+			
+			
+		    function render(datas){
+				datas = getsort(datas)
+				let html = ''
+				datas.map(v => {
+					html += `
+						<div class="row fixh">
+							<div class="col-lg-5 offset-lg-3 col-md-5 offset-md-3 col-8">
+								<input type="text" class="form-control" value="${v.content}" readonly />
+							</div>
+							<div class="col-lg-4 col-md-4 col-4">
+								<a class="btn btn-danger mybtn1" onclick="del(${v.id},'${v.content}')">删</a>
+								<a class="btn btn-warning mybtn2" onclick="mytop(${v.id})">顶</a>
+								<a class="btn btn-success mybtn3" onclick="done(${v.id},${v.done})">完</a>
+							</div>
+						</div>
+					`
+				})
+				html += `
+				<div class="row blank">
+					<div class="col-lg-5 offset-lg-3  col-md-5 offset-md-3 col-10">
+						<input type="text" id="searchText" class="form-control" />
+					</div>
+					<div class="col-lg-4 col-md-4 col-2">
+						<a class="btn btn-info mybtn" onclick="add(searchText.value)">添加</a>
+					</div>
+				</div>`
+				
+				$('.container').html(html)
+			}	
+			
+			// 完成记录渲染函数
+			function hlog(status){
+				console.log(datas,dones)
+				if($('.logbtn').text()=='待办事项' && !status){
+					 $('.logbtn').text('完成记录')
+					 return render(datas)
+				}
+				let html = ''
+				dones.map(v => {
+					html += `
+						<div class="row fixh">
+							<div class="col-lg-5 offset-lg-3 col-md-5 offset-md-3 col-8">
+								<input type="text" class="form-control" value="${v.content}" readonly />
+							</div>
+							<div class="col-lg-4 col-md-4 col-4">
+								<a class="btn btn-danger mybtn1" onclick="del(${v.id},'${v.content}')">删</a>
+								<a class="btn btn-warning mybtn2" onclick="alert('历史不能置顶！！！')" readonly>顶</a>
+								<a class="btn btn-success mybtn3" onclick="done(${v.id},${v.done})">完</a>
+							</div>
+						</div>
+					`
+				})
+				$('.container').html(html)
+				$('.logbtn').text('待办事项')
+			}
+			
+			//增加逻辑代码	
+			async function add(data){
+				if(!data) return false
+				const time = (new Date().getTime()+'').slice(0,-3) 
+				let param = {content:data,changeTime:time,top:0,done:0}
+				let end = await $.post('/schedule/adddata',param)
+				if(end == '写入成功'){
+					let id = datas[datas.length-1].id+1
+					param.id = id
+					datas.push(param)
+					render(datas)
+				}else{
+					alert('网络忙，请刷新后重试...')
+				}
+			}
+			
+			//删除逻辑代码
+			async function del(id,text){
+				
+				let status = window.confirm(`确认删除${text}吗？`)
+				if(!status) return
+				
+				let end = await $.get('/schedule/deldata/'+id)
+				if(end == '删除成功'){
+					let index = getIndex(id,datas)
+					datas.splice(index,1)
+					render(datas)
+				}else{
+					alert('网络忙，请刷新后重试...')
+				}
+			}
+			
+			//置顶逻辑代码
+			async function mytop(id){
+				let top = getTop()
+				let end = await $.post('/schedule/updata',{id:id,data:JSON.stringify({top:top})})
+				if(end == '更新成功'){
+					let index = getIndex(id,datas)
+					datas[index].top = top
+					render(datas)
+				}else{
+					alert('网络忙，请刷新后重试...')
+				}
+			}
+			
+			//完成逻辑代码
+			async function done(id,done){		
+				let end = await $.post('/schedule/updata',{id:id,data:JSON.stringify({done:Math.abs(done-1)})})
+				if(end == '更新成功'){
+					let index = getIndex(id,datas)
+					let index2 = getIndex(id,dones)
+					if($('.logbtn').text()=='完成记录'){
+						dones.push(JSON.parse(JSON.stringify(datas[index])))
+						datas.splice(index,1)
+						render(datas)
+					}else{
+						datas.push(JSON.parse(JSON.stringify(dones[index2])))
+						dones.splice(index,1)
+						hlog(1)
+					}
+
+				}else{
+					alert('网络忙，请刷新后重试...')
+				}
+			}
+			
+			function getTop(){
+				let result = []
+				result = datas.sort((p,v)=>{return v.top-p.top})
+				return result[0].top+1
+			}
+			
+			function getsort(){
+				let result = []
+				result = datas.sort((p,v)=>{return v.top-p.top})
+				return result
+			}
+			
+			function getIndex(id,data){
+				let index
+				data.map(function(v,i){
+					if(v.id == id) index = i
+				})
+				return index
+			}
+			
+		</script>
+	</body>
+</html>

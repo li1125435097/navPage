@@ -1,7 +1,15 @@
 const express = require('express')
 const router = express.Router()
 const fileDbHandle = require('../../common/fileDbHandle.js').default
-const handle = new fileDbHandle('webPage',['href','img','name','type','doc'])
+const handle = new fileDbHandle('schedule',['content','changeTime','top','done'])
+
+
+
+
+router.get('/index',(req,res)=>{
+	res.render('schedule',{})
+})
+
 
 router.get('/getdata',async (req,res)=>{
 	let result = await handle.getData()
@@ -10,7 +18,7 @@ router.get('/getdata',async (req,res)=>{
 
 router.post('/adddata',async (req,res)=>{
 	let result = await handle.addData(req.body)
-	res.redirect('/manage')
+	res.send(result)
 })
 
 router.get('/deldata/:id',async (req,res)=>{
