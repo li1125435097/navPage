@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>知识库</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css" rel="stylesheet">
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js" charset="utf-8"></script>
+		<style type="text/css">
+			.header{
+				position: fixed;
+				width: 100vw;
+				padding-top: 3vh;
+				top: 0;
+				height: 7vh;
+				background-color: white;
+				text-align: center;
+			}
+			.content{height: 99vh;padding-top: 10vh;}
+			ul{list-style: none;}
+			.add{margin-right: 10vw;}
+			a{text-decoration: none;}
+		</style>
+	</head>
+	<body class="container-fluid">
+		<div class="header">
+			<a class="add btn btn-outline-info btn-sm" onclick="location.href = '/knowledgeadd' ">添加</a>
+			<input type="text" id="searchText" />
+			<a class="search btn btn-outline-info btn-sm">搜索</a>
+		</div>
+		
+		<div class="content">
+			<ul class="render"></ul>
+		</div>
+		
+		<div class="footer"></div>
+		
+		<script type="text/javascript">
+			$(async function(){
+				// window.data = await $.get('/konwledge/getdata')
+				window.data = [{title:'标题',url:'',text:'数量的房价肯定十分'},{title:'标题',url:'sdfs.sdfj',text:'数量的房价肯定十分'}]
+				render()
+			})
+			
+			function render(){
+				let html = ''
+				data.map(v=>{
+					if(v.url){
+						html += `
+							<li><h4>${v.title}</h4><a href="${v.url}" target="_blank">
+							${v.url}</a></li>`
+					}else{
+						html += `<li><h4>${v.title}</h4>${v.text}</li>`
+					}
+				})
+				$('.render').html(html)
+			}
+		</script>
+		
+	</body>
+</html>

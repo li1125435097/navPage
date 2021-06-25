@@ -1,7 +1,6 @@
 -common    通用工具库
 -jsondata  文件型数据库
 -src       逻辑代码
-  --dbHandle M
   --routes   C
   --views    V
   --static   开放静态路径
