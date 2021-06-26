@@ -12,21 +12,23 @@
 				width: 100vw;
 				padding-top: 3vh;
 				top: 0;
-				height: 7vh;
+				height: 10vh;
 				background-color: white;
 				text-align: center;
+				z-index: 1;
 			}
 			.content{height: 99vh;padding-top: 10vh;}
-			ul{list-style: none;}
-			.add{margin-right: 10vw;}
+			ul{list-style: none;padding-left: 0;}
+			.add{margin-right: 7vw;}
 			a{text-decoration: none;}
+			/* h4{display: inline-block;width: 78vw;} */
 		</style>
 	</head>
 	<body class="container-fluid">
 		<div class="header">
 			<a class="add btn btn-outline-info btn-sm" onclick="location.href = '/knowledgeadd' ">添加</a>
 			<input type="text" id="searchText" />
-			<a class="search btn btn-outline-info btn-sm">搜索</a>
+			<a class="search btn btn-outline-info btn-sm" onclick="mysearch(searchText.value)">搜索</a>
 		</div>
 		
 		<div class="content">
@@ -37,24 +39,94 @@
 		
 		<script type="text/javascript">
 			$(async function(){
-				// window.data = await $.get('/konwledge/getdata')
-				window.data = [{title:'标题',url:'',text:'数量的房价肯定十分'},{title:'标题',url:'sdfs.sdfj',text:'数量的房价肯定十分'}]
+				window.data = await $.get('/knowledge/getdata')
 				render()
 			})
 			
-			function render(){
+			// 文本过长截取长度
+			const subl = 25
+			
+			// 列表写入函数
+		 	function render(){
 				let html = ''
 				data.map(v=>{
-					if(v.url){
+					if(v.url != 'none'){
 						html += `
-							<li><h4>${v.title}</h4><a href="${v.url}" target="_blank">
-							${v.url}</a></li>`
+							<li class="alert alert-info">
+							<h4>${v.title}</h4>
+							<a href="${v.url}" target="_blank">${v.url}</a></li>`
+							// <button type="button" class="btn-close" aria-label="Close"></button><br/>
+					}else if(v.text.length>subl){
+						html += `<li class="alert alert-info">
+						<h4>${v.title}</h4>
+						${v.text.slice(0,subl)}<span onclick="expand('${v.text}')">  ......<span/>
+						</li>`
 					}else{
-						html += `<li><h4>${v.title}</h4>${v.text}</li>`
+						html += `<li class="alert alert-info">
+						<h4>${v.title}</h4>${v.text}</li>`
 					}
 				})
 				$('.render').html(html)
 			}
+			
+			// 文本过长展开折叠
+			function expand(text){
+				let target = event.target
+				let dispose = ''
+				if(target.textContent.trim() === '......'){
+					dispose = text.slice(subl,undefined)
+					target.innerHTML = dispose
+				}else{
+					target.innerHTML = '  ......'
+				}
+			}
+			
+			// 长按触发编辑事件
+			function edit(){
+				let time = 0
+				$("li").on({
+					touchstart: function(e){
+						timeOutEvent = setTimeout(function(){longPress(e)},500);
+						e.preventDefault();
+					},
+					touchmove: function(){
+						clearTimeout(timeOutEvent);
+						timeOutEvent = 0;
+					},
+					touchend: function(){
+						clearTimeout(timeOutEvent);
+						if(timeOutEvent != 0){
+							alert('点击不是长按！！！')
+						}
+						return false;
+					}
+				})
+			}
+			
+			function longPress(e){
+				timeOutEvent = 0
+				const target = $(e.currentTarget)
+				const title = target.find('h4').text()
+				
+				// 标题渲染为可写
+				target.find('h4').html(`<input type="text" value="${title}"/>`)
+				
+				const isurl = target.find('a').length>0
+				const text = isurl ? target.find('a').text() : target.text().split('\t').pop()
+				console.log(isurl,text)
+				// target.find('h4').html(`<input type="text" value="${title}"/>`)
+				let html = '<div style="text-align:right;">'
+				html += '<a class="btn btn-primary">删除</a>&nbsp;'
+				html += '<a class="btn btn-primary">保存</a>'
+				target.append(html)
+			}
+			
+			function mysearch(text){
+				$('#searchText')[0].select()
+				
+			}
+			
+			
 		</script>
 		
 	</body>
