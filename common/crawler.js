@@ -50,7 +50,7 @@ function _craw(urls,isDefault){
 		let result = []
 		scripts.map(async (v,i)=>{
 			let data = await _runScript(v,isDefault)
-			console.log(123,data,i,)
+			console.log(123)
 			result.push(JSON.parse(JSON.stringify(data)))
 			addi += i+1
 			if(flag == addi) resolve(result)
