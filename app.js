@@ -28,6 +28,7 @@ app.use('/',require('./src/routes/main.js'))
 app.use('/list',require('./src/routes/list.js'))
 app.use('/schedule',require('./src/routes/scheduleList.js'))
 app.use('/knowledge',require('./src/routes/knowledge.js'))
+app.use('/crawl',require('./src/routes/crawl.js'))
 
 
 
