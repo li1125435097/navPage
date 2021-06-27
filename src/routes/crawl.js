@@ -13,8 +13,7 @@ router.post('/crawlurl',async function(req,res){
 
 router.post('/crawldata',async function(req,res){
 	let result = await crawl.crawl(req.body.url)
-	req.pipe(result)
-	// res.send(result)
+	res.send(result)
 })
 
 module.exports = router
