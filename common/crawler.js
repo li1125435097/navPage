@@ -32,6 +32,16 @@ function _runScript(v,isDefault){
 	})
 }
 
+// curl直接爬虫
+function crawl(url){
+	return new Promise((resolve,reject)=>{
+		exec(`curl ${url}`, (error, stdout, stderr) => {
+		if (error) {reject(`exec error: ${error}`) }
+		resolve(stdout)
+		})	
+	})
+}
+
 function getData($,title,href){
 	let myhref = href
 	let img = href + '/favicon.ico'
@@ -69,4 +79,5 @@ exports.default = {
 	prefix,
 	suffix,
 	craw:_craw,
+	crawl:crawl
 }

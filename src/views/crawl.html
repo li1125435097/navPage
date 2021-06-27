@@ -3,14 +3,39 @@
 	<head>
 		<meta charset="utf-8">
 		<title>爬虫服务</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js" charset="utf-8"></script>
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css" rel="stylesheet">
+		<style type="text/css">
+			body{
+				display: flex;
+				justify-content: center;
+				height: 100vh;
+				text-align: center;
+			}
+			form:first-child{
+				margin-bottom: 10vh;
+				margin-top: 20vh;
+			}
+			form{
+				box-shadow: 0 0 35px 1px #000066;
+				border-radius: 10px;
+				padding: 1vh 2vh;
+			}
+			[type="submit"],[type="text"]{margin-top: 1vh;}
+		</style>
 	</head>
 	<body>
 		<div>
 			<form action="/crawl/crawlurl" method="post">
 				网址： <input type="url" name="url" /><br/>
 				标题： <input type="text" name="title" /><br/>
-				<input type="submit" value="start"/>
+				<input type="submit" value="项目爬取"/>
+			</form>
+			
+			<form action="/crawl/crawldata" method="post">
+				网址： <input type="url" name="url" /><br/>
+				<input type="submit" value="网页爬取"/>
 			</form>
 		</div>
 	</body>
