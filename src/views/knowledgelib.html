@@ -36,37 +36,41 @@
 		</div>
 		
 		<div class="footer"></div>
-		
+			
 		<script type="text/javascript">
 			$(async function(){
 				window.data = await $.get('/knowledge/getdata')
 				render()
+				edit()
+				$('#searchText')[0].onkeydown = function(){if(event.keyCode==13) mysearch()}
 			})
 			
 			// 文本过长截取长度
-			const subl = 25
+			const subl = 250
 			
-			// 列表写入函数
-		 	function render(){
+			// 列表渲染函数，arr为需要渲染的数组，norender传入函数返回html字符串，不传直接渲染
+		 	function render(arr,norender){
 				let html = ''
-				data.map(v=>{
+				let datas = arr || data
+				datas.map(v=>{
 					if(v.url != 'none'){
 						html += `
-							<li class="alert alert-info">
+							<li class="alert alert-info" title="${v.id}" ondblclick="longPress()">
 							<h4>${v.title}</h4>
 							<a href="${v.url}" target="_blank">${v.url}</a></li>`
 							// <button type="button" class="btn-close" aria-label="Close"></button><br/>
 					}else if(v.text.length>subl){
-						html += `<li class="alert alert-info">
+						html += `<li class="alert alert-info" title="${v.id}" ondblclick="longPress()">
 						<h4>${v.title}</h4>
 						${v.text.slice(0,subl)}<span onclick="expand('${v.text}')">  ......<span/>
 						</li>`
 					}else{
-						html += `<li class="alert alert-info">
+						html += `<li class="alert alert-info" title="${v.id}" ondblclick="longPress()">
 						<h4>${v.title}</h4>${v.text}</li>`
 					}
 				})
-				$('.render').html(html)
+				if(norender){return html}
+				else{$('.render').html(html)}
 			}
 			
 			// 文本过长展开折叠
@@ -87,7 +91,7 @@
 				$("li").on({
 					touchstart: function(e){
 						timeOutEvent = setTimeout(function(){longPress(e)},500);
-						e.preventDefault();
+						// e.preventDefault();
 					},
 					touchmove: function(){
 						clearTimeout(timeOutEvent);
@@ -96,36 +100,77 @@
 					touchend: function(){
 						clearTimeout(timeOutEvent);
 						if(timeOutEvent != 0){
-							alert('点击不是长按！！！')
+							// alert('点击不是长按！！！')
 						}
-						return false;
+						return true;
 					}
 				})
 			}
 			
+			// 编辑模式逻辑
 			function longPress(e){
 				timeOutEvent = 0
-				const target = $(e.currentTarget)
+				const target = e ? $(e.currentTarget) : $(event.currentTarget)
 				const title = target.find('h4').text()
-				
-				// 标题渲染为可写
-				target.find('h4').html(`<input type="text" value="${title}"/>`)
-				
 				const isurl = target.find('a').length>0
-				const text = isurl ? target.find('a').text() : target.text().split('\t').pop()
-				console.log(isurl,text)
-				// target.find('h4').html(`<input type="text" value="${title}"/>`)
-				let html = '<div style="text-align:right;">'
-				html += '<a class="btn btn-primary">删除</a>&nbsp;'
-				html += '<a class="btn btn-primary">保存</a>'
-				target.append(html)
+				const isfold = target.find('span').text().match('......') == null 
+				const text = isurl ? target.find('a').text() : 
+					isfold ? target.text().split('\t').pop().replace(title,'') : 
+					target.text().split('\n')[2].split('\t').pop()
+				const id = target[0].title
+				
+				let html = ''
+				html += `<h4><input type="text" value="${title}"/></h4>`
+				html += `<textarea>${text}</textarea>`
+				html += '<div style="text-align:right;">'
+				html += `<a class="btn btn-primary" onclick="delitem(${+id})">删除</a>&nbsp;`
+				html += `<a class="btn btn-primary" onclick="saveitem(${+id},${isurl},'${title}','${text}')">保存</a>&nbsp;`
+				html += `<a class="btn btn-primary" onclick="saveitem(${+id},${isurl},'${title}','${text}',1)">取消</a><div/>`
+				target.html(html)
 			}
 			
+			// 搜索功能函数
 			function mysearch(text){
 				$('#searchText')[0].select()
-				
+				text = text || $('#searchText').val()
+				let result = []
+				data.map((v)=>{
+					let end = JSON.stringify(v)
+					if(end.indexOf(text)>-1){
+						result.push(JSON.parse(end))
+					}
+				})
+				result.length>0 ? render(result) : alert('很抱歉，没有搜到你想要的')
 			}
 			
+			// 删除记录
+			async function delitem(id){
+				if(window.confirm('确认删除此记录吗？')){
+					let result = await $.get('/knowledge/deldata/'+id)
+					if(result === '删除成功'){location.reload()}
+					else{alert('网络忙，请稍后......')}
+				}
+			}
+			
+			// 保存记录,参数为老数据，内部获取新数据，新老数据一样，直接渲染，修改后可保存渲染新数据，取消渲染老数据
+			async function saveitem(id,isurl,titled,texted,cancel){
+				const containerEle = $(event.target.parentNode.parentNode)
+				const title = containerEle.find('input').val().trim()
+				const text = containerEle.find('textarea').val()
+				
+				const same = title==titled && texted ==text
+				const dispose = {id:id,title:title,text:(isurl ? 'none' : text),url:(isurl ? text : 'none')}
+				const html = render([dispose],1).slice(isurl ? 72 : 64,-5)
+				const html1 = render([{id:id,title:titled,text:(isurl ? 'none' : texted),url:(isurl ? texted : 'none')}],1).slice(isurl ? 72 : 64,-5)
+				// console.log(same,title,titled,text,texted)
+				if(same){containerEle.html(html)}
+				else if(cancel){containerEle.html(html1)}
+				else{
+					let result = await $.post('/knowledge/updata',{id:id,data:JSON.stringify(dispose)})
+					if(result === '更新成功'){containerEle.html(html)}
+					else{alert('网络忙，请稍后......')}
+				}
+			}
 			
 		</script>
 		
