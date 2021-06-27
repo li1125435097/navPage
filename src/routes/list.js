@@ -13,6 +13,12 @@ router.post('/adddata',async (req,res)=>{
 	res.redirect('/manage')
 })
 
+
+router.post('/adddatas',async (req,res)=>{
+	let result = await handle.addData(req.body)
+	res.send(result)
+})
+
 router.get('/deldata/:id',async (req,res)=>{
 	let id = req.params.id
 	let result = await handle.delData(id)

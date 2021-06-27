@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>智能添加</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js" charset="utf-8"></script>
+		<!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css" rel="stylesheet"> -->
+		<style type="text/css">
+			body{margin: 0;padding: 0;}
+			.begin,.story{
+				width: 100%;
+				height: 100vh;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-direction: column;
+			}
+			.story{display: none;}
+			.begin>textarea{width: 80%;height: 60vh;}
+			.begin>div{width: 80%;margin-bottom: 1vh;}
+			button{padding: 5px 10px;margin-top: 2vh;}
+			select{width: 10vw;max-width: 40px;}
+			
+		</style>
+	</head>
+	<body>
+		<div class="begin" tabindex="4">
+			<div>
+				<span>请输入: </span>
+				<select class="tl">
+					<option value="0">0</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+				</select>
+				<select class="tr">
+					<option value="0">0</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+				</select>
+				<select class="ul">
+					<option value="0">0</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+				</select>
+				<select class="ur">
+					<option value="0">0</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+				</select>
+			</div>
+			<textarea></textarea>
+			<button type="button" onclick="discern()">智能识别</button>
+		</div>
+		
+		<div class="story" tabindex="5"></div>
+		
+		<script type="text/javascript">
+			$(function(){
+				
+			})
+			
+			// 识别函数
+			function discern(){
+				const tl = +$('.tl')[0].value
+				const tr = +$('.tr')[0].value || undefined
+				const ul = +$('.ul')[0].value
+				const ur = +$('.ur')[0].value || undefined
+				const texts = $('textarea').val().split('\n')
+				const separate = []
+				texts.map(v=>{
+					let data = v.split('http')
+					if(data[1]){
+						separate.push({title:data[0].slice(tl,tr).trim(),url:'http'+data[1].slice(ul,ur).trim()})
+					}
+				})
+				console.log(separate)
+				if(separate.length > 0){renderCraw(separate)}
+				else{alert('数据格式错误！！！')}
+			}
+			
+			// 渲染爬取后的数据
+			async function renderCraw(datas){
+				let data = await $.post('/crawl/crawlurl',{data:JSON.stringify(datas)})
+				console.log(data[0])
+				// let data = [{href: "https://www.baidu.com",img: "https://www.baidu.com/favicon.ico",name: "申报表 ",type: "undefine",doc: "百度一下，你就知道"}]
+				let html = '<table border="" cellspacing="0" cellpadding=""><tbody>'
+				html += '<tr><th>跳转</th><th>图片</th><th>名字</th><th>类型</th><th>简介</th></tr>'
+				data.map(v=>{
+					html += `<tr>
+						<td><input type="text" value="${v.href}"></td>
+						<td><input type="text" value="${v.img}"></td>
+						<td><input type="text" value="${v.name}"></td>
+						<td><input type="text" value="${v.type}"></td>
+						<td><input type="text" value="${v.doc}"></td>
+					</tr>`
+				})		
+				html += '</tbody></table>'
+				html += '<div><button type="button" onclick="insert()">批量插入</button>'
+				html += `<button type="button" onclick="document.querySelector('.begin').focus()">返回</button><div/>`
+				$('.story').html(html)
+				$('.story').css('display','flex')
+				$('.story').focus()
+				
+			}
+			
+			// 批量插入
+			async function insert(){
+				let eles = Array.from($('input'))
+				let promiseQueue = []
+				eles.map((v,i)=>{
+					if((i+1) % 5 == 0){
+						promiseQueue.push(
+							$.post('/list/adddatas',{href:eles[i-4].value,img:eles[i-3].value,name:eles[i-2].value,
+							type:eles[i-1].value,doc:v.value})
+						)
+					}
+				})
+				let data = await Promise.all(promiseQueue)
+				let result = data.every(v=>{return v == '写入成功'})
+				console.log(eles,data,result)
+			}
+			
+		</script>
+	</body>
+</html>
