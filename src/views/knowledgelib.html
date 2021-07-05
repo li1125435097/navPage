@@ -18,10 +18,12 @@
 				z-index: 1;
 			}
 			.content{height: 99vh;padding-top: 10vh;}
-			ul{list-style: none;padding-left: 0;}
+			ul{list-style: none;padding-left: 0;padding-bottom: 5vh;}
+			p{white-space: pre-line;}
 			.add{margin-right: 7vw;}
 			a{text-decoration: none;word-break: break-word;}
-			/* h4{display: inline-block;width: 78vw;} */
+			textarea{width: 100%;height: 20vh;}
+			h4>input{width: 100%;}
 		</style>
 	</head>
 	<body class="container-fluid">
@@ -66,7 +68,7 @@
 						</li>`
 					}else{
 						html += `<li class="alert alert-info" title="${v.id}" ondblclick="longPress()">
-						<h4>${v.title}</h4>${v.text}</li>`
+						<h4>${v.title}</h4><p>${v.text}<p/></li>`
 					}
 				})
 				if(norender){return html}
@@ -114,18 +116,19 @@
 				const title = target.find('h4').text()
 				const isurl = target.find('a').length>0
 				const isfold = target.find('span').text().match('......') == null 
-				const text = isurl ? target.find('a').text() : 
+				let text = isurl ? target.find('a').text() : 
 					isfold ? target.text().split('\t').pop().replace(title,'') : 
-					target.text().split('\n')[2].split('\t').pop()
+					target.find('p')[0].textContent
+				//text换行编码转换，在save函数中解码，解决事件参数传输问题
+				let textEncode = text.replace(/\n/g,'cn')
 				const id = target[0].title
-				
 				let html = ''
 				html += `<h4><input type="text" value="${title}"/></h4>`
 				html += `<textarea>${text}</textarea>`
 				html += '<div style="text-align:right;">'
 				html += `<a class="btn btn-primary" onclick="delitem(${+id})">删除</a>&nbsp;`
-				html += `<a class="btn btn-primary" onclick="saveitem(${+id},${isurl},'${title}','${text}')">保存</a>&nbsp;`
-				html += `<a class="btn btn-primary" onclick="saveitem(${+id},${isurl},'${title}','${text}',1)">取消</a><div/>`
+				html += `<a class="btn btn-primary" onclick="saveitem(${+id},${isurl},'${title}','${textEncode}')">保存</a>&nbsp;`
+				html += `<a class="btn btn-primary" onclick="saveitem(${+id},${isurl},'${title}','${textEncode}',1)">取消</a><div/>`
 				target.html(html)
 			}
 			
@@ -157,6 +160,7 @@
 				const containerEle = $(event.target.parentNode.parentNode)
 				const title = containerEle.find('input').val().trim()
 				const text = containerEle.find('textarea').val()
+				texted = texted.replace(/cn/g,'\n')
 				
 				const same = title==titled && texted ==text
 				const dispose = {id:id,title:title,text:(isurl ? 'none' : text),url:(isurl ? text : 'none')}

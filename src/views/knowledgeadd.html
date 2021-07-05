@@ -8,15 +8,17 @@
 		<style type="text/css">
 			form{text-align: center;}
 			input{margin-top: 1vh;}
-			input:first-child{margin-top: 30vh;}
+			input:first-of-type{margin-top: 15vh;margin-bottom: 1vh;}
+			span:nth-of-type(2){vertical-align: top;}
+			textarea{height: 40vh;width: 183px;}
 			[type="button"]{margin-left: 2vw;}
 		</style>
 	</head>
 	<body>
 		<form action="/knowledge/adddata" method="post">
-			标题： <input type="text" name="title" placeholder="请输入标题" required/><br>
-			内容： <input type="text" name="text" placeholder="请输入内容" /><br>
-			路径： <input type="text" name="url" placeholder="请输入路径" /><br>
+			<span>标题：</span><input type="text" name="title" placeholder="请输入标题" required/><br>
+			<span>内容：</span><textarea name="text" placeholder="请输入内容" ></textarea><br>
+			<span>路径：</span><input type="text" name="url" placeholder="请输入路径" /><br>
 			<input type="submit" value="提交"/><input type="button" onclick="history.back()" value="返回"/>
 		</form>
 	</body>
