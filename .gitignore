@@ -1,2 +1,5 @@
+# 过滤依赖文件
 /node_modules/
+
+# 过滤数据库文件
 /jsonData/

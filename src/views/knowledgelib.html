@@ -36,7 +36,6 @@
 		<div class="content">
 			<ul class="render"></ul>
 		</div>
-		
 		<div class="footer"></div>
 			
 		<script type="text/javascript">
@@ -62,13 +61,14 @@
 							<a href="${v.url}" target="_blank">${v.url}</a></li>`
 							// <button type="button" class="btn-close" aria-label="Close"></button><br/>
 					}else if(v.text.length>subl){
+						let text = v.text.replace(/\n/g,'cn')
 						html += `<li class="alert alert-info" title="${v.id}" ondblclick="longPress()">
 						<h4>${v.title}</h4>
-						${v.text.slice(0,subl)}<span onclick="expand('${v.text}')">  ......<span/>
+						<p>${v.text.slice(0,subl)}<span onclick="expand('${text}')">  ......<span/></p>
 						</li>`
 					}else{
 						html += `<li class="alert alert-info" title="${v.id}" ondblclick="longPress()">
-						<h4>${v.title}</h4><p>${v.text}<p/></li>`
+						<h4>${v.title}</h4><p>${v.text}</p></li>`
 					}
 				})
 				if(norender){return html}
@@ -77,6 +77,7 @@
 			
 			// 文本过长展开折叠
 			function expand(text){
+				text = text.replace(/cn/g,'\n')
 				let target = event.target
 				let dispose = ''
 				if(target.textContent.trim() === '......'){
@@ -116,9 +117,8 @@
 				const title = target.find('h4').text()
 				const isurl = target.find('a').length>0
 				const isfold = target.find('span').text().match('......') == null 
-				let text = isurl ? target.find('a').text() : 
-					isfold ? target.text().split('\t').pop().replace(title,'') : 
-					target.find('p')[0].textContent
+				if(!isfold) target.find('span')[0].click()
+				let text = isurl ? target.find('a').text() : target.find('p')[0].textContent
 				//text换行编码转换，在save函数中解码，解决事件参数传输问题
 				let textEncode = text.replace(/\n/g,'cn')
 				const id = target[0].title
