@@ -10,6 +10,11 @@
 		
 		<!-- 搜索栏 -->
 		<div class="searchItem">
+			<div class="logUser">
+				<span class="logText"></span>&emsp;
+				<button type="button" class="logBtn" onclick="logEvent()"></button>
+				<button type="button" onclick="location.href='/more'">更多</button>
+			</div>
 			<div>
 				<img src="../static/img/title.png" class="title">
 				<img src="../static/img/head-xs.ico" class="ico">
@@ -27,6 +32,7 @@
 			
 			$(async function(){
 				const datas = await getData(100)
+				await setLogin()
 				render(datas)
 				$('.btn')[0].onclick = function(){search(datas)}
 				$('#searchText')[0].onkeydown = function(){if(event.keyCode==13) search(datas)}
@@ -38,6 +44,15 @@
 			//定义简介最长显示字符
 			const nums = 14
 			
+			// 获取cookie
+			async function setLogin(){
+				let cookie = await $.get('/user/getCookie')
+				let logtext = cookie ? cookie + '  已登录' : '未登录'
+				let logBtn = cookie ? '退出登录' : '进入登录'
+				
+				$('.logText').text(logtext)
+				$('.logBtn').text(logBtn)
+			}
 			
 			// 列表渲染函数
 			function render(datas){
@@ -74,6 +89,19 @@
 					}
 				})
 				result.length>0 ? render(result) : alert('很抱歉，没有搜到你想要的')
+			}
+			
+			async function logEvent(){
+				let text = event.target.textContent
+				let isLogin = text === '退出登录'
+				if(isLogin){
+					if(window.confirm('确认退出当前登录吗？')){
+						await $.get('/user/logout')
+						location.reload()
+					}
+				}else{
+					location.href = '/user/login'
+				}
 			}
 		</script>
 		

@@ -2,6 +2,7 @@ const express = require('express')
 const ejs = require('ejs')
 const path = require('path')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const app = express()
 
 //设置允许跨域访问该服务.
@@ -22,6 +23,7 @@ app.set('view engine','html')
 app.set('views',path.join(__dirname,'src/views'))
 app.use(bodyParser.urlencoded({extended : false}))
 app.use(bodyParser.json())
+app.use(cookieParser('snow'))
 
 // 路由配置
 app.use('/',require('./src/routes/main.js'))
@@ -29,6 +31,7 @@ app.use('/list',require('./src/routes/list.js'))
 app.use('/schedule',require('./src/routes/scheduleList.js'))
 app.use('/knowledge',require('./src/routes/knowledge.js'))
 app.use('/crawl',require('./src/routes/crawl.js'))
+app.use('/user',require('./src/routes/user.js'))
 
 
 

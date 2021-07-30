@@ -2,6 +2,14 @@ body{
 	margin: 0;
 	padding: 0;
 }
+.logUser{
+	position: relative;
+	left: 39vw;
+	opacity: 0.1;
+}
+.logUser:hover{
+	opacity: 0.6;
+}
 .title{
 	width: 170px;
 	height: 35px;
@@ -13,7 +21,7 @@ body{
 }
 .searchItem{
 	text-align: center;
-	padding: 50px 0 10px;
+	padding: 30px 0 10px;
 	position: fixed;
 	width: calc(100% - 0px);
 	background-color: white;

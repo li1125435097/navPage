@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<style type="text/css">
+		body{
+			margin: 0;
+			padding: 0;
+		}
+		.container{
+			position: absolute;
+			height: 100vh;
+			width: 100%;
+			background-image: url(../static/img/login_bg.jpeg);
+			background-size: cover;
+			background-position: -200px -200px;
+			filter: blur(100px);
+			z-index: -1;
+		}
+		.content{
+			height: 100vh;
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color:#333;
+			flex-wrap: wrap;
+		}
+		.block{
+			background-color: rgba(255,255,255,0.4);
+			padding: 30px;
+			border-radius: 15px;
+			margin: 0 20px;
+			width: 20vw;
+		}
+		img{
+			width: 20vw;
+		}
+		.blockName{
+			font-size: 23px;
+			font-weight: 600;
+			margin-bottom: 16px;
+		}
+	</style>
+	<body>
+		<div class="container"></div>
+		<div class="content">
+			<div class="block">
+				<center><div class="blockName">待办日志</div></center>
+				<a href="/schedule"><img src="https://img0.baidu.com/it/u=1437343743,4078873858&fm=26&fmt=auto&gp=0.jpg"></a>
+			</div>		
+			<div class="block">
+				<center><div class="blockName">知识库</div></center>
+				<a href="/knowledgelib"><img src="https://img1.baidu.com/it/u=2691124103,3530667429&fm=26&fmt=auto&gp=0.jpg" ></a>
+			</div>
+			
+		</div>
+	</body>
+</html>

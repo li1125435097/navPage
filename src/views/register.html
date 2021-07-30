@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<style type="text/css">
+		body{
+			margin: 0;
+			padding: 0;
+		}
+		.container{
+			position: absolute;
+			height: 100vh;
+			width: 100%;
+			background-image: url(../static/img/login_bg.jpeg);
+			background-size: cover;
+			background-position: -200px -200px;
+			filter: blur(100px);
+			z-index: -1;
+		}
+		.content{
+			height: 100vh;
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color:#333;
+		}
+		form{
+			background-color: rgba(255,255,255,0.4);
+			padding: 30px;
+			border-radius: 15px;
+		}
+		input[type="text"]{
+			background-color: rgba(255,255,255,0.4);
+			border: none;
+			border-radius: 7px;
+			outline: none;
+			padding: 7px 10px;
+			margin-bottom: 15px;
+			width: 215px;
+			letter-spacing: 1px;
+			font-size: 15px;
+		}
+		input[type="button"],input[type="submit"]{
+			border-radius: 7px;
+			border: none;
+			padding: 7px 104px;
+			background-color: #15be1f;
+			color: #eee;
+			cursor: pointer;
+			margin-bottom: 7px;
+		}
+		input[type="submit"]:hover{
+			box-shadow: 0 0 8px -1px white inset;
+		}
+		.loginName{
+			font-size: 23px;
+			font-weight: 600;
+			margin-bottom: 16px;
+		}
+		.help{
+			font-size: 8px;
+			text-align: right;
+		}
+	</style>
+	<body>
+		<div class="container"></div>
+		<div class="content">
+			<form action="/user/register" method="post">
+				<center><div class="loginName">柚子科技注册</div></center>
+				<input type="text" name="user" placeholder="Username" autocomplete="off" required/><br>
+				<input type="text" name="pwd" placeholder="Password"  autocomplete="off" required/><br>
+				<input type="text" name="name" placeholder="Name"  autocomplete="off" required/><br>
+				<input type="text" name="tel" placeholder="Tel"  autocomplete="off" required/><br>
+				<input type="submit" value="注册"/><br>
+				<div class="help">名字和电话请认真填写，用于密码找回</div>
+				<div class="help">点击注册刷新此页面，是用户名被注册</div>
+			</form>		
+		</div>
+	</body>
+</html>
