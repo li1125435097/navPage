@@ -68,7 +68,7 @@
 				let agenda = []
 				let complete = []
 				values.map(v=>{v.done==1 ? complete.push(v) : agenda.push(v)})
-				console.log(agenda,complete)
+				// console.log(agenda,complete)
 				window.datas = agenda
 				window.dones = complete
 				render(datas)
@@ -76,6 +76,7 @@
 			
 			
 		    function render(datas){
+				// console.log(datas)
 				datas = getsort(datas)
 				let html = ''
 				datas.map(v => {
@@ -107,7 +108,7 @@
 			
 			// 完成记录渲染函数
 			function hlog(status){
-				console.log(datas,dones)
+				// console.log(datas,dones)
 				if($('.logbtn').text()=='待办事项' && !status){
 					 $('.logbtn').text('完成记录')
 					 return render(datas)
@@ -138,7 +139,7 @@
 				let param = {content:data,changeTime:time,top:0,done:0}
 				let end = await $.post('/schedule/adddata',param)
 				if(end == '写入成功'){
-					let id = datas[datas.length-1].id+1
+					let id = datas.length>1 ? datas[datas.length-1].id+1 : 1
 					param.id = id
 					datas.push(param)
 					render(datas)

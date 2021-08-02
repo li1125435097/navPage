@@ -19,22 +19,29 @@ router.post('/login',async (req,res)=>{
 	let {user,pwd} = req.body
 	let users = await handle.getData()
 	let result = users.some(v=>{return v.user == user && v.pwd == pwd })
-	result = result ? {user:user,status:true} : {status:false},
-	res.cookie('user',user,{signed: true})
-	res.redirect('/')
+	// result = result ? {user:user,status:true} : {status:false}
+	if(result){
+		res.cookie('user',user,{signed: true})
+		res.redirect('/')
+	}else{
+		res.redirect('/user/login')
+	}
+	
 })
 
 router.post('/register',async (req,res)=>{
 	let users = await handle.getData()
 	let isHave = users.some(v=>{return v.user == req.body.user})
-	if(isHave) res.redirect('/user/register')
-	
-	let result = await handle.addData(Object.assign(req.body,{status:1}))
-	if(result == '写入成功'){
-		res.cookie('user',user,{signed: true})
-		res.redirect('/')
-	} 
-	else{res.render('register',{})}
+	if(isHave){
+		res.redirect('/user/register')
+	}else{
+		let result = await handle.addData(Object.assign(req.body,{status:1}))
+		if(result == '写入成功'){
+			res.cookie('user',req.body.user,{signed: true})
+			res.redirect('/')
+		} 
+		else{res.render('register',{})}
+	}
 })
 
 router.get('/getCookie',async (req,res)=>{

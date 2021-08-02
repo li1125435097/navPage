@@ -18,6 +18,13 @@ class FileHandle{
 		this.testDbSource()
 	}
 	
+	static getInstance(mypath,format){
+		if(!this.Instance || this.mypath != mypath){
+			this.Instance = new FileHandle(mypath,format);
+		}
+		return this.Instance;
+	}
+	
 	// 获取数据
 	async getData(){
 		return new Promise((resolve,reject)=>{

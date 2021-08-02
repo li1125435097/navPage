@@ -63,6 +63,11 @@
 			font-weight: 600;
 			margin-bottom: 16px;
 		}
+		.help{
+			font-size: 8px;
+			text-align: right;
+			margin-top: 10px;
+		}
 	</style>
 	<body>
 		<div class="container"></div>
@@ -72,7 +77,8 @@
 				<input type="text" name="user" placeholder="Username" autocomplete="off" required/><br>
 				<input type="password" name="pwd" placeholder="Password" required/><br>
 				<input type="submit" value="登录"/><br>
-				<input type="button" onclick="location.href='/user/register'" value="注册"/>
+				<input type="button" onclick="location.href='/user/register'" value="注册"/><br>
+				<div class="help">点击登录刷新此页面是账号密码错误</div>
 			</form>		
 		</div>
 	</body>
