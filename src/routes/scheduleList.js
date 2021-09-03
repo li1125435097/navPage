@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const fileDbHandle = require('../../common/fileDbHandle.js').default
-// const handle = new fileDbHandle('schedule',['content','changeTime','top','done'])
 const userHandle = new fileDbHandle('user',['user','pwd','name','tel','status'])
 const dbField = ['content','changeTime','top','done']
 
@@ -16,7 +15,6 @@ async function getHandle(user){
 		}
 	}
 	if(user == 'jinke') id = ''
-	// console.log(users,id,user)
 	const handle = fileDbHandle.getInstance('schedule'+id,dbField)
 	return handle
 }

@@ -138,6 +138,7 @@
 				const time = (new Date().getTime()+'').slice(0,-3) 
 				let param = {content:data,changeTime:time,top:0,done:0}
 				let end = await $.post('/schedule/adddata',param)
+				if(end.match('登录')) return location.href = '/user/login'
 				if(end == '写入成功'){
 					let id = datas.length>1 ? datas[datas.length-1].id+1 : 1
 					param.id = id
