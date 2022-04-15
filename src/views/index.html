@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>柚子科技</title>
 		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
 		<link rel="stylesheet" type="text/css" href="../static/css/index.css"/>
@@ -11,16 +12,19 @@
 		<!-- 搜索栏 -->
 		<div class="searchItem">
 			<div class="logUser">
-				<span class="logText"></span>&emsp;
-				<button type="button" class="logBtn" onclick="logEvent()"></button>
+				<span class="logText">未登录</span>&emsp;
+				<button type="button" class="logBtn" onclick="logEvent()">进入登录</button>
 				<button type="button" onclick="location.href='/more'">更多</button>
 			</div>
 			<div>
 				<img src="../static/img/title.png" class="title">
 				<img src="../static/img/head-xs.ico" class="ico">
 			</div>
-			<input type="text" id="searchText" class="search"/>
-			<div class="btn">搜索</div>
+			<div>
+				<div class="inline"><input type="text" id="searchText" class="search"/><span class="btn right">搜索</span></div>
+				
+				
+			</div>
 		</div>
 		
 		<!-- 展示栏 -->
@@ -62,9 +66,9 @@
 					<a href="${data.href}"  target="_blank">
 						<img src="${data.img}">
 						<div class="content">
-							名称：<span>${data.name}</span><br>
-							类型：<span>${data.type}</span><br>
-							简介：<span title="${data.doc}">${data.doc.length>nums ? data.doc.slice(0,nums)+'...' : data.doc}</span>
+							<span>名称：${data.name}</span><br>
+							<span>类型：${data.type}</span><br>
+							<span title="${data.doc}" class="fitshow">简介：${data.doc.length>nums ? data.doc.slice(0,nums)+'...' : data.doc}</span>
 						</div>
 					</a>
 				</li>`
